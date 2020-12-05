@@ -24,13 +24,13 @@ public class MainWineEngine {
     public static void main(String[] args) throws Exception {
 
         SparkSession spark = SparkSession.builder()
-                .master("spark://ip-172-31-84-29.ec2.internal:7077")
+                .master("local[*]")
                 .appName("Predict Wine Quality")
                 .getOrCreate();
         JavaSparkContext jsc = new JavaSparkContext(spark.sparkContext());
         jsc.setLogLevel("ERROR");
 
-        String file = "/home/ubuntu/project/Schema.json";
+        String file = "D:\\DHRUV_STUDY\\NJIT\\CS 643 CLOUD COMPUTING\\DATASET_PROJECT2\\Schema.json";
         String json = readFileAsString(file);
 
         StructType schemaFile = (StructType) StructType.fromJson(json);
@@ -41,7 +41,7 @@ public class MainWineEngine {
                 .option("header", true)
                 .option("delimiter", ";")
                 .option("mode", "PERMISSIVE")
-                .option("path", "/home/ubuntu/project/TrainingDataset.csv")
+                .option("path", "D:\\DHRUV_STUDY\\NJIT\\CS 643 CLOUD COMPUTING\\DATASET_PROJECT2\\TrainingDataset50.csv")
                 .load();
 
         String[] featureCols = new String[]{"fixedAcidity", "volatileAcidity", "citricAcid", "residualSugar", "chlorides", "freeSulfurDioxide",
@@ -49,13 +49,13 @@ public class MainWineEngine {
 
         VectorAssembler vectorAssembler = new VectorAssembler().setInputCols(featureCols).setOutputCol("features");
         Dataset<Row> vectorDf = vectorAssembler.transform(TrainingDf);
-        System.out.println("Printing vectorDf...");
-        vectorDf.show(10, false);
+//        System.out.println("Printing vectorDf...");
+//        vectorDf.show(10, false);
 
         StringIndexer indexer = new StringIndexer().setInputCol("quality").setOutputCol("label");
         Dataset<Row> filTrainingDf = indexer.fit(vectorDf).transform(vectorDf);
-        System.out.println("Printing filTrainingDf...");
-        filTrainingDf.show(10, false);
+//        System.out.println("Printing filTrainingDf...");
+//        filTrainingDf.show(10, false);
 
         Dataset<Row> validationDf = spark.read()
                 .format("csv")
@@ -64,19 +64,19 @@ public class MainWineEngine {
                 .option("escape", "\"")
                 .option("delimiter", ";")
                 .option("mode", "PERMISSIVE")
-                .option("path", "/home/ubuntu/project/ValidationDataset.csv")
+                .option("path", "D:\\DHRUV_STUDY\\NJIT\\CS 643 CLOUD COMPUTING\\DATASET_PROJECT2\\ValidationDataset50.csv")
                 .load();
 
-        System.out.println("Printing validationDf...");
-        validationDf.show(10, false);
+//        System.out.println("Printing validationDf...");
+//        validationDf.show(10, false);
 
         Dataset<Row> tranfDf = vectorAssembler.transform(validationDf);
-        System.out.println("Printing tranfDf...");
-        tranfDf.show(10, false);
+//        System.out.println("Printing tranfDf...");
+//        tranfDf.show(10, false);
 
         Dataset<Row> filValidationDf = indexer.fit(tranfDf).transform(tranfDf);
-        System.out.println("Printing filValidationDf...");
-        filValidationDf.show(10, false);
+//        System.out.println("Printing filValidationDf...");
+//        filValidationDf.show(10, false);
 
         DecisionTreeClassifier decisionTreeClassifier = new DecisionTreeClassifier().setMaxDepth(3).setSeed(6030);
         DecisionTreeClassificationModel model = decisionTreeClassifier.fit(filTrainingDf);
