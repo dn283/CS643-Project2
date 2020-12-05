@@ -49,13 +49,11 @@ public class MainWineEngine {
 
         VectorAssembler vectorAssembler = new VectorAssembler().setInputCols(featureCols).setOutputCol("features");
         Dataset<Row> vectorDf = vectorAssembler.transform(TrainingDf);
-//        System.out.println("Printing vectorDf...");
-//        vectorDf.show(10, false);
+
 
         StringIndexer indexer = new StringIndexer().setInputCol("quality").setOutputCol("label");
         Dataset<Row> filTrainingDf = indexer.fit(vectorDf).transform(vectorDf);
-//        System.out.println("Printing filTrainingDf...");
-//        filTrainingDf.show(10, false);
+
 
         Dataset<Row> validationDf = spark.read()
                 .format("csv")
@@ -67,16 +65,9 @@ public class MainWineEngine {
                 .option("path", "D:\\DHRUV_STUDY\\NJIT\\CS 643 CLOUD COMPUTING\\DATASET_PROJECT2\\ValidationDataset50.csv")
                 .load();
 
-//        System.out.println("Printing validationDf...");
-//        validationDf.show(10, false);
-
         Dataset<Row> tranfDf = vectorAssembler.transform(validationDf);
-//        System.out.println("Printing tranfDf...");
-//        tranfDf.show(10, false);
 
         Dataset<Row> filValidationDf = indexer.fit(tranfDf).transform(tranfDf);
-//        System.out.println("Printing filValidationDf...");
-//        filValidationDf.show(10, false);
 
         DecisionTreeClassifier decisionTreeClassifier = new DecisionTreeClassifier().setMaxDepth(3).setSeed(6030);
         DecisionTreeClassificationModel model = decisionTreeClassifier.fit(filTrainingDf);
@@ -90,13 +81,6 @@ public class MainWineEngine {
 
         double Accuracy = eval.evaluate(predictions);
         System.out.println("Accuracy before: " + Accuracy);
-
-       /* Dataset<Row> wrong = predictions.select("prediction", "label").where("prediction != label");
-
-        System.out.println("Printing wrong count: " + wrong.count());
-
-        long accuracyManual = 1 - (wrong.count() / filValidationDf.count());
-        System.out.println("Printing accuracyManual: " + accuracyManual);*/
 
         MulticlassMetrics multiclassMetrics = new MulticlassMetrics(predictions.select("prediction", "label"));
         System.out.println("Weighted F1 score before pipeline fitting:" + multiclassMetrics.weightedFMeasure());
