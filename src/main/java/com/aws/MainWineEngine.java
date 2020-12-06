@@ -83,7 +83,7 @@ public class MainWineEngine {
         System.out.println("Accuracy before: " + Accuracy);
 
         MulticlassMetrics multiclassMetrics = new MulticlassMetrics(predictions.select("prediction", "label"));
-        System.out.println("Weighted F1 score before pipeline fitting:" + multiclassMetrics.weightedFMeasure());
+        System.out.println("F1 score before:" + multiclassMetrics.weightedFMeasure());
 
         ParamMap[] grid = new ParamGridBuilder()
                 .addGrid(decisionTreeClassifier.maxBins(), new int[]{15, 25})
@@ -106,10 +106,10 @@ public class MainWineEngine {
         System.out.println("Accuracy after pipeline: " + Accuracy2);
 
         MulticlassMetrics multiclassMetrics1 = new MulticlassMetrics(predict.select("prediction", "label"));
-        System.out.println("Weighted F1 score after:" + multiclassMetrics1.weightedFMeasure());
-        System.out.println("Weighted precision:" + multiclassMetrics1.weightedPrecision());
-        System.out.println("Weighted recall:" + multiclassMetrics1.weightedRecall());
-        System.out.println("Weighted false positive rate:" + multiclassMetrics1.weightedFalsePositiveRate());
+        System.out.println("F1 score after:" + multiclassMetrics1.weightedFMeasure());
+        System.out.println("Precision:" + multiclassMetrics1.weightedPrecision());
+        System.out.println("Recall:" + multiclassMetrics1.weightedRecall());
+        System.out.println("False positive rate:" + multiclassMetrics1.weightedFalsePositiveRate());
 
     }
 
