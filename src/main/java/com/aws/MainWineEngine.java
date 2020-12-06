@@ -41,7 +41,7 @@ public class MainWineEngine {
                 .option("header", true)
                 .option("delimiter", ";")
                 .option("mode", "PERMISSIVE")
-                .option("path", "/home/ubuntu/project/TrainingDataset50.csv")
+                .option("path", "/home/ubuntu/project/TrainingDataset.csv")
                 .load();
 
         String[] featureCols = new String[]{"fixedAcidity", "volatileAcidity", "citricAcid", "residualSugar", "chlorides", "freeSulfurDioxide",
@@ -62,7 +62,7 @@ public class MainWineEngine {
                 .option("escape", "\"")
                 .option("delimiter", ";")
                 .option("mode", "PERMISSIVE")
-                .option("path", "/home/ubuntu/project/ValidationDataset50.csv")
+                .option("path", "/home/ubuntu/project/ValidationDataset.csv")
                 .load();
 
         Dataset<Row> tranfDf = vectorAssembler.transform(validationDf);
