@@ -24,13 +24,13 @@ public class MainWineEngine {
     public static void main(String[] args) throws Exception {
 
         SparkSession spark = SparkSession.builder()
-                .master("local[*]")
+                .master("spark://ip-172-31-84-29.ec2.internal:7077")
                 .appName("Predict Wine Quality")
                 .getOrCreate();
         JavaSparkContext jsc = new JavaSparkContext(spark.sparkContext());
         jsc.setLogLevel("ERROR");
 
-        String file = "D:\\DHRUV_STUDY\\NJIT\\CS 643 CLOUD COMPUTING\\DATASET_PROJECT2\\Schema.json";
+        String file = "/home/ubuntu/project/Schema.json";
         String json = readFileAsString(file);
 
         StructType schemaFile = (StructType) StructType.fromJson(json);
@@ -41,7 +41,7 @@ public class MainWineEngine {
                 .option("header", true)
                 .option("delimiter", ";")
                 .option("mode", "PERMISSIVE")
-                .option("path", "D:\\DHRUV_STUDY\\NJIT\\CS 643 CLOUD COMPUTING\\DATASET_PROJECT2\\TrainingDataset50.csv")
+                .option("path", "/home/ubuntu/project/TrainingDataset50.csv")
                 .load();
 
         String[] featureCols = new String[]{"fixedAcidity", "volatileAcidity", "citricAcid", "residualSugar", "chlorides", "freeSulfurDioxide",
@@ -62,7 +62,7 @@ public class MainWineEngine {
                 .option("escape", "\"")
                 .option("delimiter", ";")
                 .option("mode", "PERMISSIVE")
-                .option("path", "D:\\DHRUV_STUDY\\NJIT\\CS 643 CLOUD COMPUTING\\DATASET_PROJECT2\\ValidationDataset50.csv")
+                .option("path", "/home/ubuntu/project/ValidationDataset50.csv")
                 .load();
 
         Dataset<Row> tranfDf = vectorAssembler.transform(validationDf);
